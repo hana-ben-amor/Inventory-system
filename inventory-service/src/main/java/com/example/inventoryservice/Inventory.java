@@ -1,2 +1,3 @@
-package com.example.inventoryservice;public class Inventory {
+package com.example.inventoryservice;
+public class Inventory {
 }
