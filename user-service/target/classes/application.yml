@@ -22,10 +22,10 @@ spring:
       ddl-auto: update
     show-sql: true
   application:
-    name: user-service
+    name: USER-SERVICE
 
 application:
-  name: user-service
+  name: USER-SERVICE
   security:
     jwt:
       Secret_key: mysecretkey
