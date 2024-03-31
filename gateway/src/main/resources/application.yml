@@ -10,10 +10,6 @@ spring:
           predicates:
             - Path=/products/**
 
-        - id: inventory-service
-          uri: lb://PRODUCT-SERVICE
-          predicates:
-            - Path=/products/**
 
         - id: order-service
           uri: lb://ORDER-SERVICE
