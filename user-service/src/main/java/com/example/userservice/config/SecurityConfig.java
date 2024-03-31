@@ -23,7 +23,7 @@ public class SecurityConfig{
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        req->req.requestMatchers("/**").permitAll()
+                        req->req.requestMatchers("/users/login","/users/validate-token","/users/register","/users/**").permitAll()
                                 /*requestMatchers("/users/**","/admin/**","/super-admin/**","/admin/manage/**","/student/manage/**","/professor/manage/**","/admin/manage/**","/api/roles").hasRole("SUPER_ADMIN")
                                 .requestMatchers("/student/schedule", "/student/notes", "/student/actuality", "/student/group").hasRole("STUDENT")
                                 .requestMatchers("/professor/**").hasRole("PROFESSOR")

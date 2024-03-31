@@ -1,6 +1,7 @@
 package com.example.userservice.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.userservice.entity.User;
 import com.example.userservice.repository.RoleCustomRepo;
 import com.example.userservice.repository.UserRepository;
@@ -33,6 +34,17 @@ public class JwtService {
 
                 .sign(algorithm);
     }
+    public boolean validateToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey.getBytes());
+            JWT.require(algorithm).build().verify(token);
+            return true; // Token is valid
+        } catch (JWTVerificationException exception) {
+            // Invalid signature/claims
+            return false;
+        }
+    }
+
 
 
 }

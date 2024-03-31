@@ -181,4 +181,50 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding user: " + e.getMessage());
         }
-    }}
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody User newUser) {
+        try {
+            // Set an empty password for the new user if not provided
+            if (StringUtils.isBlank(newUser.getPassword())) {
+                newUser.setPassword(""); // You may want to handle password hashing and security properly
+            }
+
+            // Retrieve the existing role by name (assuming "ROLE_USER" is already in the database)
+            Role userRole = roleRepository.findByName("ROLE_USER");
+
+            // Assign the existing role to the user if roles are not provided
+            if (newUser.getRoles() == null || newUser.getRoles().isEmpty()) {
+                newUser.setRoles(Collections.singleton(userRole));
+            } else {
+                // Check if each role already exists in the database, if not, save it
+                Set<Role> existingRoles = new HashSet<>();
+                for (Role role : newUser.getRoles()) {
+                    Role existingRole = roleRepository.findByName(role.getName());
+                    if (existingRole != null) {
+                        existingRoles.add(existingRole);
+                    } else {
+                        throw new RoleNotFoundException("Role not found");
+                    }
+                }
+                newUser.setRoles(existingRoles);
+            }
+            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+
+            // Add the user to the database
+            userService.addUser(newUser);
+
+            // Generate the access token for the added user with default ROLE_USER
+            Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+            String jwtAccessToken = jwtService.generateToken(newUser, authorities);
+
+            // Return the access token as a plain string
+            return ResponseEntity.ok(jwtAccessToken);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding user: " + e.getMessage());
+        }
+    }
+
+
+}
