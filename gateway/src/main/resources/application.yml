@@ -12,15 +12,12 @@ spring:
           filters:
             - AuthenticationFilter
 
-
-
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/orders/**
           filters:
             - AuthenticationFilter
-
 
         - id: user-service
           uri: lb://USER-SERVICE
