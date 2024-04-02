@@ -14,6 +14,7 @@ import java.util.Optional;
 @RequestMapping("/inventories")
 @RequiredArgsConstructor
 public class InventoryController {
+
     private final InventoryService inventoryService;
     @PostMapping("/create")
     public Inventory create(@RequestBody InventoryRequest inventoryRequest){
@@ -21,15 +22,18 @@ public class InventoryController {
     }
     @GetMapping("/get/{id}")
     public Optional<Inventory> getInventory(@PathVariable Long id){
-
         return inventoryService.getInventory(id);
     }
 
 
-    @PutMapping("/set")
-    public Inventory setInventory(@RequestBody Inventory inventory){
+
+    //*************************
+    @PutMapping("/update")
+    public Inventory updateInventory(@RequestBody Inventory inventory){
         return inventoryService.update(inventory);
     }
+
+
 
     @GetMapping("/all")
     public List<Inventory> getInventories(){
@@ -64,5 +68,16 @@ public class InventoryController {
     @PostMapping("/orderRetrieve")
     public List<Inventory> orderRetrieve(@RequestBody List<Inventory> inventories){
         return inventoryService.orderRetrieve(inventories);
+    }
+
+
+
+
+    //make all the orders in pending state
+    //*************************
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable Long id)
+    {
+        inventoryService.delete(id);
     }
 }

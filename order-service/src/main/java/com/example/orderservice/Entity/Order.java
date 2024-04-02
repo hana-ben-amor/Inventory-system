@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Data
@@ -16,7 +18,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
-
+    private Long productId;
     private Long customerId;
 
     private LocalDateTime orderDate;
@@ -24,10 +26,11 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    private double totalAmount;
+    private int totalQuantity ;
 
-    private String shippingAddress;
+    private String shippingAddress ;
 
-    private String paymentDetails;
+    private Double totalPrice ;
+
 }
 

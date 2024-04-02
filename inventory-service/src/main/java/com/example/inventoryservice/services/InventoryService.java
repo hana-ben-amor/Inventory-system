@@ -4,8 +4,11 @@ import com.example.inventoryservice.dto.InventoryRequest;
 import com.example.inventoryservice.dto.StockResponse;
 import com.example.inventoryservice.entities.Inventory;
 import com.example.inventoryservice.repositories.InventoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,10 +18,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
-    public Inventory create(InventoryRequest inventoryRequest){
-        Inventory inventory=Inventory.builder().quantity(inventoryRequest.getQuantity()).build();
+
+    public Inventory create(InventoryRequest inventoryRequest) {
+        Inventory inventory =
+                Inventory.builder()
+                        .id(inventoryRequest.getId())
+                        .quantity(inventoryRequest.getQuantity())
+                        .build();
+
         return inventoryRepository.save(inventory);
     }
+
     public Inventory update(Inventory inventory){
         return inventoryRepository.save(inventory);
     }
@@ -48,11 +58,23 @@ public class InventoryService {
         }
     }
 
+    @Transactional
     public Inventory addQuantity(Inventory inventory){
-        Optional<Inventory> inventory1=getInventory(inventory.getId());
+        Optional<Inventory> inventory1= getInventory(inventory.getId());
         if (inventory1.isPresent()){
             inventory1.get().setQuantity(inventory1.get().getQuantity()+inventory.getQuantity());
-            return update(inventory1.get());
+
+
+            WebClient webClient = WebClient.create("http://localhost:8082");
+
+            Mono<Inventory> updated_inventory = webClient.post()
+                    .uri("/orders/updateOrderStatus")
+                    .body( Mono.just(inventory1.get()),Inventory.class)
+                    .retrieve()
+                    .bodyToMono(Inventory.class);
+
+
+            return update(updated_inventory.block());
         }
         else {
             return null;
@@ -87,5 +109,10 @@ public class InventoryService {
 
     public List<Inventory> orderRetrieve(List<Inventory> inventories){
         return inventories.stream().map(this::retrieveQuantity).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        inventoryRepository.deleteById(id);
     }
 }
