@@ -1,4 +1,4 @@
-package com.example.inventoryservice.dto;
+package com.example.productservice.DTO;
 
 import lombok.*;
 
@@ -6,8 +6,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class InventoryRequest
 {
     private Long id;

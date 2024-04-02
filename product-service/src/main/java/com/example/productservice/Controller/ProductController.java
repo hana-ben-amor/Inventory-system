@@ -1,5 +1,7 @@
 package com.example.productservice.Controller;
 
+import com.example.productservice.DTO.ProductRequest;
+import com.example.productservice.DTO.ProductResponse;
 import com.example.productservice.Entity.Product;
 import com.example.productservice.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +26,31 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
-    @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    @GetMapping("/with_quantity/{id}")
+    public ProductResponse getProductByIdWithQuantity(@PathVariable Long id) {
+        return productService.getProductByIdWithQuantity(id);
     }
 
-    @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct) {
+
+
+    @PostMapping("/create")
+    public Product createProduct(@RequestBody ProductRequest productRequest) {
+
+        return productService.createProduct(productRequest);
+    }
+
+    @PutMapping("update_no_quantity/{id}")
+    public Product updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct)
+    {
         return productService.updateProduct(id, updatedProduct);
     }
+
+    @PutMapping("update/{id}")
+    public Product updateProduct(@PathVariable Long id, @RequestBody ProductRequest updatedProduct)
+    {
+        return productService.updateProductWithQuantity(id, updatedProduct);
+    }
+
 
     @DeleteMapping("/{id}")
     public void deleteProduct(@PathVariable Long id) {
