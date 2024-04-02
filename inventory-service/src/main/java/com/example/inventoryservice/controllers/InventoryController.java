@@ -25,8 +25,9 @@ public class InventoryController {
 
         return inventoryService.getInventory(id);
     }
+    
 
-
+    //*************************
     @PutMapping("/update")
     public Inventory updateInventory(@RequestBody Inventory inventory){
         return inventoryService.update(inventory);
@@ -69,6 +70,9 @@ public class InventoryController {
     }
 
 
+
+    //make all the orders in pending state
+    //*************************
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Long id)
     {
