@@ -24,8 +24,8 @@ Our project utilizes the following technologies:
 ## Getting Started
 
 To run the project locally, follow these steps:
-1. Clone the repository: `git clone https://github.com/your-username/e-commerce-microservices.git`
-2. Navigate to the project directory: `cd e-commerce-microservices`
+1. Clone the repository: `git clone https://github.com/hana-ben-amor/inventory-system.git`
+2. Navigate to the project directory: `cd inventory-system`
 3. Build the Docker images: `docker-compose build`
 4. Start the containers: `docker-compose up`
 5. Access the services via their respective endpoints.
