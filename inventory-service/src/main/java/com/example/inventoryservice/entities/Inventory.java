@@ -13,7 +13,6 @@ import lombok.*;
 @AllArgsConstructor
 public class Inventory {
     @Id
-    @GeneratedValue
     private Long id;
     private int quantity;
 }

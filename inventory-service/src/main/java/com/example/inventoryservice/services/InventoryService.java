@@ -4,6 +4,7 @@ import com.example.inventoryservice.dto.InventoryRequest;
 import com.example.inventoryservice.dto.StockResponse;
 import com.example.inventoryservice.entities.Inventory;
 import com.example.inventoryservice.repositories.InventoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
-    public Inventory create(InventoryRequest inventoryRequest){
-        Inventory inventory=Inventory.builder().quantity(inventoryRequest.getQuantity()).build();
+
+    public Inventory create(InventoryRequest inventoryRequest) {
+        Inventory inventory =
+                Inventory.builder()
+                        .id(inventoryRequest.getId())
+                        .quantity(inventoryRequest.getQuantity())
+                        .build();
+
         return inventoryRepository.save(inventory);
     }
+
     public Inventory update(Inventory inventory){
         return inventoryRepository.save(inventory);
     }
@@ -87,5 +95,10 @@ public class InventoryService {
 
     public List<Inventory> orderRetrieve(List<Inventory> inventories){
         return inventories.stream().map(this::retrieveQuantity).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        inventoryRepository.deleteById(id);
     }
 }
