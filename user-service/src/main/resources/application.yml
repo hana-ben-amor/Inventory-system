@@ -35,8 +35,12 @@ application:
       FAIL_ON_EMPTY_BEANS: false
 
 
-
-
+#Actuator prometheus endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
 
 
 

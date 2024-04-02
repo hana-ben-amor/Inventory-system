@@ -17,3 +17,9 @@ server:
   port: 8761
 
 
+#Actuator prometheus endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
