@@ -1,17 +1,16 @@
 package com.example.orderservice.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Getter
+@Setter
 @Table(name="_order")
 public class Order {
     @Id
