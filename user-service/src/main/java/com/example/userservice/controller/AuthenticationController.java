@@ -6,6 +6,8 @@ import com.example.userservice.repository.UserRepository;
 import com.example.userservice.service.AuthenticationService;
 import com.example.userservice.service.JwtService;
 import com.example.userservice.service.UserService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,11 +32,24 @@ public class AuthenticationController {
     @Autowired
     private final AuthenticationService authenticationService;
     private String newAccessToken;
+    private Counter userLoginsCounter;
+
+    @Autowired
+        public void setUserLoginsCounter(MeterRegistry meterRegistry) {
+        this.userLoginsCounter = Counter.builder("user_logins_total")
+                .description("Count of user logins")
+                .register(meterRegistry);
+    }
 
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest){
-        return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
+
+        ResponseEntity<?> responseEntity = authenticationService.authenticate(authenticationRequest);
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            userLoginsCounter.increment();
+        }
+        return responseEntity;
     }
     @GetMapping("/validate-token")
     public ResponseEntity<String> validateToken(@RequestHeader("Authorization") String token) {

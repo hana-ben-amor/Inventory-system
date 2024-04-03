@@ -7,6 +7,8 @@ import com.example.userservice.exception.UserNotFoundException;
 import com.example.userservice.repository.RoleRepository;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.service.UserService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +39,11 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(new HashSet<>());
+        //userRegistrationsCounter.increment(); // Increment user registration counter
         return userRepository.save(user);
     }
+
+
 
 
     public Optional<User> findUserById(Long id){
