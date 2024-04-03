@@ -1,11 +1,10 @@
 server:
   port: 8082
+
 eureka:
-  instance:
-    hostname: localhost
   client:
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:8761/eureka
+      defaultZone: http://localhost:8761/eureka/
 
 spring:
   config:
@@ -13,7 +12,7 @@ spring:
   application:
     name: order-service
   datasource:
-    url: jdbc:mysql://localhost:3306/inventory_system
+    url: jdbc:mysql://localhost:3306/orders
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -23,6 +22,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+
+
 
 #Actuator prometheus endpoint
 management:

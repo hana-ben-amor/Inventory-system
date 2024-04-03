@@ -27,6 +27,8 @@ public class InventoryController {
     }
 
 
+
+    //*************************
     @PutMapping("/update")
     public Inventory updateInventory(@RequestBody Inventory inventory){
         return inventoryService.update(inventory);
@@ -67,6 +69,7 @@ public class InventoryController {
     public List<Inventory> orderRetrieve(@RequestBody List<Inventory> inventories){
         return inventoryService.orderRetrieve(inventories);
     }
+
 
 
     @DeleteMapping("/delete/{id}")
