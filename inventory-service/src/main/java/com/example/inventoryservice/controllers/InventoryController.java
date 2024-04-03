@@ -35,7 +35,6 @@ public class InventoryController {
     }
 
 
-
     @GetMapping("/all")
     public List<Inventory> getInventories(){
         return inventoryService.getInventories();
@@ -72,8 +71,7 @@ public class InventoryController {
     }
 
 
-    //make all the orders in pending state
-    //*************************
+
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Long id)
     {
