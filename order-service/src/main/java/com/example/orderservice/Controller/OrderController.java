@@ -1,11 +1,14 @@
 package com.example.orderservice.Controller;
 
+import com.example.orderservice.DTO.InventoryItem;
 import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Entity.OrderStatus;
 import com.example.orderservice.Service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -27,7 +30,13 @@ public class OrderController {
 
 
     @PostMapping("/create") //**
+<<<<<<< HEAD
     public Order createOrder(@RequestBody Order order) {
+=======
+    public Order createOrder(@RequestBody Order order)
+    {
+        order.setOrderDate(LocalDateTime.now());
+>>>>>>> yassine
         return orderService.createOrder(order);
     }
 
@@ -50,6 +59,15 @@ public class OrderController {
     public void unCancelOrder(@PathVariable Long id) {
         orderService.unCancelOrder(id);
     }
+<<<<<<< HEAD
+=======
+
+    @PostMapping("updateOrderStatus")
+    public Mono<InventoryItem> updateOrderStatus(@RequestBody InventoryItem inventoryItem)
+    {
+        return Mono.just(orderService.getQuantityAfterUpdatingOrders(inventoryItem));
+    }
+>>>>>>> yassine
 }
 
 

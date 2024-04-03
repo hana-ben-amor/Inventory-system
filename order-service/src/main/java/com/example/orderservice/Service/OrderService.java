@@ -6,12 +6,21 @@ import com.example.orderservice.Entity.OrderStatus;
 import com.example.orderservice.Repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
+=======
+import org.springframework.data.domain.Sort;
+>>>>>>> yassine
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+<<<<<<< HEAD
+=======
+import java.util.stream.Collectors;
+>>>>>>> yassine
 
 @Service
 public class OrderService {
@@ -96,7 +105,10 @@ public class OrderService {
         Order order = order_o.get();//TODO:: check if null
         order.setStatus(OrderStatus.CANCELED);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> yassine
         ResponseEntity<InventoryItem> inventoryResponce
                 = restTemplate.getForEntity(inventoryPath +"/get/" + order.getProductId(), InventoryItem.class);
 
@@ -130,6 +142,40 @@ public class OrderService {
         createOrder(order);
     }
 
+<<<<<<< HEAD
+=======
+    public InventoryItem getQuantityAfterUpdatingOrders(InventoryItem inventoryItem) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "orderDate");
+        List<Order> orders = orderRepository
+                .findByStatusAndProductId(OrderStatus.PENDING,inventoryItem.getId(),sort);
+
+        System.out.println(orders);
+        for(Order o : orders)
+        {
+            System.out.println(o);
+        }
+        System.out.println("updating is called");
+        orders.stream().map(
+                (e)->{
+                    if(inventoryItem.getQuantity()>=e.getTotalQuantity())
+                    {
+                        System.out.println("entered for order : " + e.getOrderId());
+                        e.setStatus(OrderStatus.PROCESSING);
+                        inventoryItem.setQuantity(inventoryItem.getQuantity()- e.getTotalQuantity());
+                        return orderRepository.save(e);
+                    }else {
+                        System.out.println(inventoryItem.getQuantity() >= e.getTotalQuantity());
+                    }
+                    return 0;
+                }
+        ).collect(Collectors.toList());;
+
+
+        System.out.println(inventoryItem);
+        return inventoryItem;
+    }
+
+>>>>>>> yassine
     //unpending function
 }
 

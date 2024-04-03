@@ -88,6 +88,9 @@ public class ProductService {
 
     public void deleteProduct(Long id)
     {
+        //check if orders linked to this product
+        //if exsit then don't delete
+
         restTemplate.delete(inventoryPath + "/delete/" + id);
         productRepository.deleteById(id);
     }
