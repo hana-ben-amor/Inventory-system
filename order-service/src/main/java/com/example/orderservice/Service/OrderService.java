@@ -4,6 +4,8 @@ import com.example.orderservice.DTO.InventoryItem;
 import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Entity.OrderStatus;
 import com.example.orderservice.Repository.OrderRepository;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -15,16 +17,44 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-
 @Service
 public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
 
+
+    private final Counter ordersPendingCounter;
+    private final Counter ordersProcessingCounter;
+    private final Counter ordersShippedCounter;
+    private final Counter ordersDeliveredCounter;
+    private final Counter totalOrdersCounter;
+
+    public OrderService(MeterRegistry meterRegistry) {
+        ordersPendingCounter = Counter.builder("orders_pending")
+                .description("Count of orders with status PENDING")
+                .register(meterRegistry);
+
+        ordersProcessingCounter = Counter.builder("orders_processing")
+                .description("Count of orders with status PROCESSING")
+                .register(meterRegistry);
+
+        ordersShippedCounter = Counter.builder("orders_shipped")
+                .description("Count of orders with status SHIPPED")
+                .register(meterRegistry);
+
+        ordersDeliveredCounter = Counter.builder("orders_delivered")
+                .description("Count of orders with status DELIVERED")
+                .register(meterRegistry);
+
+        totalOrdersCounter = Counter.builder("total_orders")
+                .description("Total number of orders")
+                .register(meterRegistry);
+    }
+
     private final RestTemplate restTemplate = new RestTemplate() ;
     private final String inventoryPath = "http://localhost:8084/inventories";
+
 
 
 
@@ -39,6 +69,7 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(Order order) {
+
 
         Long poductId= order.getProductId();
 
@@ -72,7 +103,10 @@ public class OrderService {
 
 
         }
+        processOrder(order);
+        totalOrdersCounter.increment();
         return orderRepository.save(order);
+
     }
 
     //use save here instead of all this code
@@ -80,9 +114,15 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
 
+        // Decrement the counter based on the existing status
+        decrementCounter(existingOrder.getStatus());
+
+        // Update the order
         existingOrder.setCustomerId(updatedOrder.getCustomerId());
         existingOrder.setOrderDate(updatedOrder.getOrderDate());
         existingOrder.setStatus(updatedOrder.getStatus());
+        // Increment the counter based on the new status
+        incrementCounter(updatedOrder.getStatus());
         existingOrder.setTotalQuantity(updatedOrder.getTotalQuantity());
         existingOrder.setShippingAddress(updatedOrder.getShippingAddress());
         existingOrder.setTotalPrice(updatedOrder.getTotalPrice());
@@ -91,7 +131,34 @@ public class OrderService {
     }
 
     public void deleteOrder(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+
+        // Decrement the counter based on the order status
+        decrementCounter(order.getStatus());
+
         orderRepository.deleteById(id);
+        totalOrdersCounter.increment(-1); // Decrement total orders counter when an order is deleted
+    }
+
+    private void processOrder(Order order) {
+        switch (order.getStatus()) {
+            case PENDING:
+                ordersPendingCounter.increment();
+                break;
+            case PROCESSING:
+                ordersProcessingCounter.increment();
+                break;
+            case SHIPPED:
+                ordersShippedCounter.increment();
+                break;
+            case DELIVERED:
+                ordersDeliveredCounter.increment();
+                break;
+            default:
+                // Handle unknown status
+                break;
+        }
     }
 
     @Transactional
@@ -165,5 +232,47 @@ public class OrderService {
     }
 
     //unpending function
-}
 
+
+
+    private void incrementCounter(OrderStatus status) {
+        switch (status) {
+            case PENDING:
+                ordersPendingCounter.increment();
+                break;
+            case PROCESSING:
+                ordersProcessingCounter.increment();
+                break;
+            case SHIPPED:
+                ordersShippedCounter.increment();
+                break;
+            case DELIVERED:
+                ordersDeliveredCounter.increment();
+                break;
+            default:
+                // Handle unknown status
+                break;
+        }
+    }
+
+    private void decrementCounter(OrderStatus status) {
+        switch (status) {
+            case PENDING:
+                ordersPendingCounter.increment(-1);
+                break;
+            case PROCESSING:
+                ordersProcessingCounter.increment(-1);
+                break;
+            case SHIPPED:
+                ordersShippedCounter.increment(-1);
+                break;
+            case DELIVERED:
+                ordersDeliveredCounter.increment(-1);
+                break;
+            default:
+                // Handle unknown status
+                break;
+        }
+    }
+
+}

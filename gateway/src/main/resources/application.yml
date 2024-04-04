@@ -45,3 +45,16 @@ eureka:
 
 server:
   port: 8222
+
+#Actuator prometheus endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true

@@ -39,9 +39,13 @@ public class InventoryController {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> yassine
+=======
+
+>>>>>>> main
     @GetMapping("/all")
     public List<Inventory> getInventories(){
         return inventoryService.getInventories();
@@ -82,9 +86,12 @@ public class InventoryController {
 <<<<<<< HEAD
 =======
 
+<<<<<<< HEAD
 >>>>>>> yassine
     //make all the orders in pending state
     //*************************
+=======
+>>>>>>> main
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Long id)
     {

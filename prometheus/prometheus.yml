@@ -1,0 +1,49 @@
+global:
+  scrape_interval: 10s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 10s # Evaluate rules every 15 seconds. The default is every 1 minute.
+
+
+scrape_configs: #we can define here multiple jobs : our main business services
+  - job_name: 'product-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['192.168.1.3:8083']
+        labels:
+          application: 'Product Service Application'
+
+
+  - job_name: 'user-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['192.168.1.3:8081']
+        labels:
+          application: 'User Service Application'
+
+  - job_name: 'order-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['192.168.1.3:8082']
+        labels:
+          application: 'Order Service Application'
+
+
+  - job_name: 'inventory-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ '192.168.1.3:8084' ]
+        labels:
+          application: 'Inventory Service Application'
+
+
+  - job_name: 'gateway'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ '192.168.1.3:8222' ]
+        labels:
+          application: 'Gateway API Service Application'
+

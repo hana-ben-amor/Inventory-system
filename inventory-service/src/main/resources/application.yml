@@ -24,3 +24,15 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+#Actuator prometheus endpoint
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true

@@ -1,18 +1,18 @@
 package com.example.orderservice.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+
 
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Getter
+@Setter
 @Table(name="_order")
 public class Order {
     @Id
@@ -30,8 +30,12 @@ public class Order {
 
     private String shippingAddress ;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> main
 
     private Double totalPrice ;
+
 
 
 
@@ -45,10 +49,13 @@ public class Order {
         this.shippingAddress = shippingAddress;
         this.totalPrice = totalPrice;
     }
+<<<<<<< HEAD
 =======
 
     private Double totalPrice ;
 >>>>>>> yassine
+=======
+>>>>>>> main
 
 }
 

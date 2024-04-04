@@ -8,6 +8,8 @@ import com.example.userservice.repository.UserRepository;
 import com.example.userservice.service.JwtService;
 import com.example.userservice.service.impl.UserServiceImpl;
 import io.micrometer.common.util.StringUtils;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,14 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    private Counter userRegistrationsCounter;
+
+    @Autowired
+    public void setUserRegistrationsCounter(MeterRegistry meterRegistry) {
+        this.userRegistrationsCounter = Counter.builder("user_registrations_total")
+                .description("Count of new user registrations")
+                .register(meterRegistry);
+    }
     public UserController() {
     }
 
@@ -214,6 +224,7 @@ public class UserController {
 
             // Add the user to the database
             userService.addUser(newUser);
+            userRegistrationsCounter.increment();
 
             // Generate the access token for the added user with default ROLE_USER
             Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));

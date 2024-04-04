@@ -29,6 +29,7 @@ public class OrderController {
     }
 
 
+<<<<<<< HEAD
     @PostMapping("/create") //**
 <<<<<<< HEAD
     public Order createOrder(@RequestBody Order order) {
@@ -37,6 +38,14 @@ public class OrderController {
     {
         order.setOrderDate(LocalDateTime.now());
 >>>>>>> yassine
+=======
+    @PostMapping("/create")
+
+
+    public Order createOrder(@RequestBody Order order)
+    {
+        order.setOrderDate(LocalDateTime.now());
+>>>>>>> main
         return orderService.createOrder(order);
     }
 
@@ -60,14 +69,20 @@ public class OrderController {
         orderService.unCancelOrder(id);
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> main
 
     @PostMapping("updateOrderStatus")
     public Mono<InventoryItem> updateOrderStatus(@RequestBody InventoryItem inventoryItem)
     {
         return Mono.just(orderService.getQuantityAfterUpdatingOrders(inventoryItem));
     }
+<<<<<<< HEAD
 >>>>>>> yassine
+=======
+>>>>>>> main
 }
 
 
