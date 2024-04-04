@@ -24,28 +24,13 @@ public class InventoryController {
     public Optional<Inventory> getInventory(@PathVariable Long id){
         return inventoryService.getInventory(id);
     }
-    
-
-<<<<<<< HEAD
-=======
 
 
->>>>>>> yassine
-    //*************************
     @PutMapping("/update")
     public Inventory updateInventory(@RequestBody Inventory inventory){
         return inventoryService.update(inventory);
     }
 
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> yassine
-=======
-
->>>>>>> main
     @GetMapping("/all")
     public List<Inventory> getInventories(){
         return inventoryService.getInventories();
@@ -81,17 +66,6 @@ public class InventoryController {
         return inventoryService.orderRetrieve(inventories);
     }
 
-
-
-<<<<<<< HEAD
-=======
-
-<<<<<<< HEAD
->>>>>>> yassine
-    //make all the orders in pending state
-    //*************************
-=======
->>>>>>> main
     @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Long id)
     {

@@ -4,12 +4,18 @@ import com.example.orderservice.DTO.InventoryItem;
 import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Entity.OrderStatus;
 import com.example.orderservice.Repository.OrderRepository;
+import com.netflix.discovery.converters.Auto;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Service
 public class OrderService {
 
@@ -24,13 +31,17 @@ public class OrderService {
     private OrderRepository orderRepository;
 
 
-    private final Counter ordersPendingCounter;
-    private final Counter ordersProcessingCounter;
-    private final Counter ordersShippedCounter;
-    private final Counter ordersDeliveredCounter;
-    private final Counter totalOrdersCounter;
+    private final KafkaTemplate<String,String> kafkaTemplate;
+    private  Counter ordersPendingCounter;
+    private  Counter ordersProcessingCounter;
+    private  Counter ordersShippedCounter;
+    private  Counter ordersDeliveredCounter;
+    private  Counter totalOrdersCounter;
 
-    public OrderService(MeterRegistry meterRegistry) {
+
+
+    public OrderService(KafkaTemplate<String, String> kafkaTemplate, MeterRegistry meterRegistry) {
+        this.kafkaTemplate = kafkaTemplate;
         ordersPendingCounter = Counter.builder("orders_pending")
                 .description("Count of orders with status PENDING")
                 .register(meterRegistry);
@@ -68,7 +79,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createOrder(Order order) {
+    public Order createOrder(Order order , boolean isUpdating) {
 
 
         Long poductId= order.getProductId();
@@ -104,9 +115,10 @@ public class OrderService {
 
         }
         processOrder(order);
-        totalOrdersCounter.increment();
+        if(!isUpdating) {
+            totalOrdersCounter.increment();
+        }
         return orderRepository.save(order);
-
     }
 
     //use save here instead of all this code
@@ -197,7 +209,7 @@ public class OrderService {
 
         // to uncancel the order + check if the inventory is suffisiant and all other constraints
         // + it will not create a new one because the order here have its id so it will just update it in the database
-        createOrder(order);
+        createOrder(order,true);
     }
 
     public InventoryItem getQuantityAfterUpdatingOrders(InventoryItem inventoryItem) {
@@ -274,5 +286,22 @@ public class OrderService {
                 break;
         }
     }
+
+
+
+
+
+
+    @KafkaListener(topics = "requestTopic")
+    public void checkProductExist(String productId)
+    {
+        List<Order> orders
+                = orderRepository.findByProductId(Long.valueOf(productId));
+
+        kafkaTemplate.send("responseTopic",orders.isEmpty()+""+productId.toString());
+
+
+    }
+
 
 }

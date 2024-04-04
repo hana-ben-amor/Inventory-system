@@ -9,16 +9,19 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
 
+    private final KafkaTemplate<String,String> kafkaTemplate;
     private final RestTemplate restTemplate = new RestTemplate() ;
     private final String inventoryPath = "http://localhost:8084/inventories";
 
@@ -86,18 +89,31 @@ public class ProductService {
     }
 
 
-    public void deleteProduct(Long id)
+    private void delete(Long id)
     {
-<<<<<<< HEAD
-        //check if orders linked to this product
-        //if exsit then don't delete
-=======
->>>>>>> main
-
         restTemplate.delete(inventoryPath + "/delete/" + id);
         productRepository.deleteById(id);
     }
 
+    public void tryDeleteProduct(Long id)
+    {
+        kafkaTemplate.send("requestTopic",id.toString());
+    }
+
+
+    @KafkaListener(topics="responseTopic")
+    public void getDeletionPermission(String response)
+    {
+        System.out.println("getDeletionPermission is called + response : " + response);
+        if(response.startsWith("true"))
+        {
+            delete(Long.valueOf(response.substring(4)));
+        }
+        else
+        {
+            System.out.println("you can not delete this product cuz there is orders placed on it !");
+        }
+    }
 
     @Transactional
     public Product updateProductWithQuantity(Long id, ProductRequest updatedProduct) {

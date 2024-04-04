@@ -10,10 +10,12 @@ import java.util.Date;
 
 @Entity
 @Data
-@RequiredArgsConstructor
 @Getter
 @Setter
 @Table(name="_order")
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,33 +31,9 @@ public class Order {
     private int totalQuantity ;
 
     private String shippingAddress ;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> main
-
     private Double totalPrice ;
 
 
-
-
-    public Order(Long orderId, Long productId, Long customerId, LocalDateTime orderDate, OrderStatus status, int totalQuantity, String shippingAddress, Double totalPrice) {
-        this.orderId = orderId;
-        this.productId = productId;
-        this.customerId = customerId;
-        this.orderDate = LocalDateTime.now();
-        this.status = status;
-        this.totalQuantity = totalQuantity;
-        this.shippingAddress = shippingAddress;
-        this.totalPrice = totalPrice;
-    }
-<<<<<<< HEAD
-=======
-
-    private Double totalPrice ;
->>>>>>> yassine
-=======
->>>>>>> main
 
 }
 
