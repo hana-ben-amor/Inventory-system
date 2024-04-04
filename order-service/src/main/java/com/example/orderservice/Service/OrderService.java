@@ -6,10 +6,7 @@ import com.example.orderservice.Entity.OrderStatus;
 import com.example.orderservice.Repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
-=======
 import org.springframework.data.domain.Sort;
->>>>>>> yassine
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -17,10 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-<<<<<<< HEAD
-=======
 import java.util.stream.Collectors;
->>>>>>> yassine
+
 
 @Service
 public class OrderService {
@@ -105,10 +100,6 @@ public class OrderService {
         Order order = order_o.get();//TODO:: check if null
         order.setStatus(OrderStatus.CANCELED);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> yassine
         ResponseEntity<InventoryItem> inventoryResponce
                 = restTemplate.getForEntity(inventoryPath +"/get/" + order.getProductId(), InventoryItem.class);
 
@@ -142,8 +133,6 @@ public class OrderService {
         createOrder(order);
     }
 
-<<<<<<< HEAD
-=======
     public InventoryItem getQuantityAfterUpdatingOrders(InventoryItem inventoryItem) {
         Sort sort = Sort.by(Sort.Direction.ASC, "orderDate");
         List<Order> orders = orderRepository
@@ -175,7 +164,6 @@ public class OrderService {
         return inventoryItem;
     }
 
->>>>>>> yassine
     //unpending function
 }
 
