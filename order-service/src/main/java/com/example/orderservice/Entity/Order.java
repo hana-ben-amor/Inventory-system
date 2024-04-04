@@ -2,6 +2,8 @@ package com.example.orderservice.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -29,6 +31,7 @@ public class Order {
     private String shippingAddress ;
 
     private Double totalPrice ;
+
 
 
 

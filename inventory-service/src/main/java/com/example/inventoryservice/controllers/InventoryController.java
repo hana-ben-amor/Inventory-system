@@ -22,7 +22,6 @@ public class InventoryController {
     }
     @GetMapping("/get/{id}")
     public Optional<Inventory> getInventory(@PathVariable Long id){
-
         return inventoryService.getInventory(id);
     }
 
@@ -33,6 +32,7 @@ public class InventoryController {
     public Inventory updateInventory(@RequestBody Inventory inventory){
         return inventoryService.update(inventory);
     }
+
 
 
     @GetMapping("/all")
@@ -69,6 +69,7 @@ public class InventoryController {
     public List<Inventory> orderRetrieve(@RequestBody List<Inventory> inventories){
         return inventoryService.orderRetrieve(inventories);
     }
+
 
 
 

@@ -88,6 +88,7 @@ public class ProductService {
 
     public void deleteProduct(Long id)
     {
+
         restTemplate.delete(inventoryPath + "/delete/" + id);
         productRepository.deleteById(id);
     }
