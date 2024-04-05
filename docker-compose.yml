@@ -45,3 +45,80 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_DB: orders
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5433:5433"
+
+  config-server:
+    image: config-server-img
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - broker
+
+  discovery-service:
+    image: discovery-service-img
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    depends_on:
+      - gateway
+
+  gateway:
+    image: gateway-service-img
+    container_name: gateway
+    ports:
+      - "8222:8222"
+    depends_on:
+      - config-server
+
+  inventory-service:
+    image: inventory-service-img
+    container_name: inventory-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - discovery-service
+
+#  order-service:
+#    image: order-service-img
+#    container_name: order-service
+#    ports:
+#      - "8082:8082"
+#    depends_on:
+#      - discovery-service
+#      - postgres
+
+  product-service:
+    image: product-service-img
+    container_name: product-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - discovery-service
+
+  user-service:
+    image: user-service-img
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - discovery-service
+
+
+
+
+
+
+
