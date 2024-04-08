@@ -20,6 +20,8 @@ public class InventoryController {
     public Inventory create(@RequestBody InventoryRequest inventoryRequest){
         return inventoryService.create(inventoryRequest);
     }
+
+
     @GetMapping("/get/{id}")
     public Optional<Inventory> getInventory(@PathVariable Long id){
         return inventoryService.getInventory(id);
@@ -31,7 +33,7 @@ public class InventoryController {
         return inventoryService.update(inventory);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<Inventory> getInventories(){
         return inventoryService.getInventories();
     }

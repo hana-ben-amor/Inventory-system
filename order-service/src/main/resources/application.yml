@@ -12,20 +12,17 @@ spring:
   application:
     name: order-service
   datasource:
-#    url: jdbc:mysql://localhost:3306/orders
-#    username: root
-#    password:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-     url: jdbc:postgresql://postgres:5433/orders
-     driver-class-name: org.postgresql.Driver
-     username: postgres
-     password: password
+    url: jdbc:mysql://localhost:3306/orders
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.MySQLDialect
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
